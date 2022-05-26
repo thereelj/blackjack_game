@@ -4,8 +4,12 @@ let messageEl = document.getElementById("message-el")
 let hasBlackJack = false
 let isAlive = false
 let cards = []
-
-
+let player = {
+    name: "Jez",
+    chips: 150
+}
+let playerEl = document.querySelector(".player-el")
+playerEl.textContent = player.name + ": $" + player.chips
 
 function drawFirstTwoCards(){
     let firstCard = randomCard()
@@ -26,8 +30,26 @@ function randomCard() {
     return randomNumber
 }
 
+function resetGame() {
+    if (cards.length === 0) {
+        messageEl.textContent = "Start the game first!"
+        return
+    }
+    messageEl.textContent = "Want to play a round?"
+    sumCards.textContent = "Total: "
+    cardsEl.textContent = "Cards: "
+    hasBlackJack = false
+    isAlive = false
+    cards = []
+
+}
 
 function startGame() {
+    if (isAlive === true) {
+        messageEl.textContent = "Game already sarted! Pick a card?"
+        return
+    }
+    cards.length = 0;
     isAlive = true
     drawFirstTwoCards()
     renderGame()
@@ -46,10 +68,11 @@ function renderGame() {
     }
     else if (total === 21) {
         message = "You've got a Blackjack!"
+        isAlive = false
         hasBlackJack = true
     }
     else {
-        message = "You're out of the game!"
+        message = "You're out of the game! Start a new game?"
         isAlive = false
     }
     messageEl.textContent = message
@@ -57,7 +80,14 @@ function renderGame() {
 
 
 function newCard() {
-    console.log("Drawing a new cad from the deck!")
+    if (cards.length === 0) {
+        messageEl.textContent = "Start the game first!"
+        return
+    }
+    if (isAlive === false || hasBlackJack === true) {
+        messageEl.textContent = "You can not draw any more cards!"
+        return
+    }
     let newCard = randomCard()
     cards.push(newCard)
     renderGame()
